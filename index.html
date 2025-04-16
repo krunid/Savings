@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>แฟลชการ์ดคำศัพท์</title>
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background: #e0f7fa;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #00796b;
+    }
+
+    .flashcard-container {
+      perspective: 1000px;
+      margin: 2rem auto;
+      width: 300px;
+      height: 260px;
+    }
+
+    .flashcard {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+      cursor: pointer;
+    }
+
+    .flashcard.flip {
+      transform: rotateY(180deg);
+    }
+
+    .flashcard-side {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      font-size: 1.5rem;
+      padding: 1rem;
+    }
+
+    .front {
+      background-color: #ffffff;
+      color: #333;
+    }
+
+    .back {
+      background-color: #4db6ac;
+      color: #fff;
+      transform: rotateY(180deg);
+    }
+
+    img {
+      max-width: 100px;
+      max-height: 100px;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+    }
+
+    .buttons {
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin: 0 10px;
+      border: none;
+      background-color: #00796b;
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #004d40;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>แฟลชการ์ดคำศัพท์</h1>
+
+  <div class="flashcard-container" onclick="flipCard()">
+    <div class="flashcard" id="flashcard">
+      <div class="flashcard-side front" id="front">
+        <img id="img-front" src="" alt="ภาพคำศัพท์">
+        <div id="word">Apple</div>
+      </div>
+      <div class="flashcard-side back" id="back">
+        <img id="img-back" src="" alt="ภาพคำศัพท์">
+        <div id="meaning">แอปเปิล</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button onclick="speakWord()">🔊 พูด</button>
+    <button onclick="nextCard()">ถัดไป</button>
+  </div>
+
+  <script>
+    const flashcards = [
+      { word: "Apple", meaning: "แอปเปิล", image: "https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg" },
+      { word: "Book", meaning: "หนังสือ", image: "https://upload.wikimedia.org/wikipedia/commons/8/89/Book_icon.png" },
+      { word: "Cat", meaning: "แมว", image: "https://upload.wikimedia.org/wikipedia/commons/a/a3/81_INF_DIV_SSI.jpg" },
+      { word: "Dog", meaning: "สุนัข", image: "https://upload.wikimedia.org/wikipedia/commons/d/d9/Collage_of_Nine_Dogs.jpg" },
+      { word: "Elephant", meaning: "ช้าง", image: "https://upload.wikimedia.org/wikipedia/commons/3/37/African_Bush_Elephant.jpg" }
+    ];
+
+    let currentIndex = 0;
+
+    const flashcard = document.getElementById('flashcard');
+    const wordEl = document.getElementById('word');
+    const meaningEl = document.getElementById('meaning');
+    const imgFront = document.getElementById('img-front');
+    const imgBack = document.getElementById('img-back');
+
+    function flipCard() {
+      flashcard.classList.toggle('flip');
+    }
+
+    function speakWord() {
+      const utterance = new SpeechSynthesisUtterance(flashcards[currentIndex].word);
+      utterance.lang = 'en-US';
+      speechSynthesis.speak(utterance);
+    }
+
+    function nextCard() {
+      flashcard.classList.remove('flip');
+      let newIndex;
+      do {
+        newIndex = Math.floor(Math.random() * flashcards.length);
+      } while (newIndex === currentIndex);
+
+      currentIndex = newIndex;
+      const card = flashcards[currentIndex];
+      wordEl.textContent = card.word;
+      meaningEl.textContent = card.meaning;
+      imgFront.src = card.image;
+      imgBack.src = card.image;
+    }
+
+    // preload first card
+    nextCard();
+  </script>
+
+</body>
+</html>
